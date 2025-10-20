@@ -1,0 +1,355 @@
+Here’s your **dark-themed, copy-on-double-click** HTML summary page for **Modules 1–4 (Weeks 1–7)**. Save as `comp1350-summary.html` and open in a browser.
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>COMP 1350 — Web Stack Summary (Copy-on-Double-Click)</title>
+<style>
+  :root{
+    --bg:#0b1020; --panel:#0f1733; --ink:#e8ecff; --muted:#a9b3d1;
+    --accent:#8bb2ff; --accent2:#6ee7b7;
+    --ring: rgba(139,178,255,.25); --hover: rgba(139,178,255,.08); --copied: rgba(110,231,183,.18);
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans";
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans);
+    line-height:1.6;
+  }
+
+  .wrap{
+    display:grid; grid-template-columns: 280px 1fr; gap:24px; min-height:100vh;
+  }
+
+  aside{
+    position:sticky; top:0; height:100dvh; overflow:auto; padding:20px;
+    background:var(--panel); border-right:1px solid rgba(255,255,255,.06);
+  }
+
+  main{ padding:28px 28px 60px; }
+
+  h1{
+    margin:0 0 12px; font-size:28px; letter-spacing:.3px;
+    display:flex; align-items:center; gap:10px;
+  }
+
+  .badge{
+    font-family:var(--mono); font-size:12px; color:var(--panel);
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    padding:3px 8px; border-radius:999px;
+  }
+
+  .muted{ color:var(--muted); font-size:14px; margin:2px 0 18px; }
+
+  nav a{
+    display:block; color:var(--ink); text-decoration:none; padding:8px 10px; border-radius:10px;
+    font-size:14px; margin-bottom:6px;
+  }
+  nav a:hover{ background:var(--hover); }
+  nav .kicker{ color:var(--muted); font-size:12px; margin:14px 10px 6px; text-transform:uppercase; letter-spacing:.12em; }
+
+  section{
+    background:var(--panel); border:1px solid rgba(255,255,255,.06); border-radius:16px;
+    padding:20px; margin-bottom:22px; box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  }
+
+  h2{
+    margin:0 0 4px; font-size:22px;
+  }
+  .week{ color:var(--muted); font-size:13px; margin-bottom:14px; }
+
+  .outcome, .key, .notes{
+    margin:12px 0; padding:12px; border-radius:12px; background:rgba(139,178,255,.06);
+    border:1px solid rgba(139,178,255,.18);
+  }
+  .outcome b, .key b, .notes b{ color:var(--accent); }
+
+  ul{ margin:8px 0 0 0; padding-left:20px; }
+  li{ margin:6px 0; }
+
+  /* Copy-on-double-click affordance */
+  .copyline{
+    cursor:copy; border-radius:10px; transition:background .18s ease, box-shadow .18s ease;
+    padding:2px 6px; margin-left:-6px;
+  }
+  .copyline:hover{ background:var(--hover); }
+  .copyline.copied{
+    background:var(--copied);
+    box-shadow: 0 0 0 3px var(--ring) inset;
+  }
+
+  .toolbar{
+    display:flex; gap:10px; align-items:center; margin-bottom:18px; flex-wrap:wrap;
+  }
+  .search{
+    display:flex; align-items:center; gap:8px; background:var(--panel);
+    border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:8px 12px; width:100%;
+  }
+  .search input{
+    width:100%; background:transparent; border:none; outline:none; color:var(--ink); font-size:14px;
+  }
+  .pill{
+    border:1px solid rgba(255,255,255,.12); border-radius:999px; padding:6px 10px; font-size:12px; color:var(--muted);
+  }
+
+  .footer{
+    text-align:center; color:var(--muted); font-size:12px; margin-top:24px;
+  }
+
+  @media (max-width: 900px){
+    .wrap{ grid-template-columns: 1fr; }
+    aside{ position:static; height:auto; border-right:none; border-bottom:1px solid rgba(255,255,255,.06); }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <aside>
+      <h1>COMP 1350 <span class="badge">Web Stack</span></h1>
+      <p class="muted">Chapter-by-chapter summaries • Double-click any line to copy.</p>
+      <nav>
+        <div class="kicker">Module 1</div>
+        <a href="#m1">Week 1 — Web Stack Intro</a>
+
+        <div class="kicker">Module 2</div>
+        <a href="#m2w2">Week 2 — Apache &amp; Nginx</a>
+        <a href="#m2w3">Week 3 — IIS &amp; Express</a>
+
+        <div class="kicker">Module 3</div>
+        <a href="#m3w4">Week 4 — Deployment</a>
+
+        <div class="kicker">Module 4</div>
+        <a href="#m4w5">Week 5 — SSL/TLS</a>
+        <a href="#m4w6">Week 6 — PKI &amp; Reverse Proxy</a>
+        <a href="#m4w7">Week 7 — OAuth</a>
+      </nav>
+    </aside>
+
+    <main>
+      <header class="toolbar">
+        <div class="search" title="Type to filter sections">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.3-4.3m1.8-5.2a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <input id="filter" placeholder="Quick filter (e.g., TLS, reverse proxy, Nginx, OAuth) — press Enter to clear" />
+        </div>
+        <span class="pill">Tip: Double-click any bullet to copy.</span>
+      </header>
+
+      <!-- Module 1 -->
+      <section id="m1">
+        <h2>Module 1 — Web Stack Fundamentals</h2>
+        <div class="week">Week 1</div>
+        <div class="outcome"><b>Outcome:</b> Describe the components of a scalable, distributed web stack.</div>
+        <div class="key">
+          <b>Key Ideas</b>
+          <ul>
+            <li class="copyline">Front End (client): HTML, CSS, JavaScript in browser/mobile apps.</li>
+            <li class="copyline">Back End (server): Web servers, databases, OS, application servers, load balancers.</li>
+            <li class="copyline">Scalability: Architectures evolve with traffic growth (horizontal/vertical scaling).</li>
+            <li class="copyline">Distribution: Components split across tiers and nodes for reliability and performance.</li>
+          </ul>
+        </div>
+        <div class="notes">
+          <b>Stack Snapshot</b>
+          <ul>
+            <li class="copyline">Browsers: Chrome, Edge, Safari, etc.</li>
+            <li class="copyline">Web servers: Apache, IIS, Nginx, Express (Node.js).</li>
+            <li class="copyline">Application servers: JBoss, GlassFish, WebLogic, WebSphere.</li>
+            <li class="copyline">Load balancers: HAProxy, Nginx, AWS ELB (software/hardware).</li>
+            <li class="copyline">Operating systems: Linux/Unix, Windows, macOS.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Module 2 Week 2 -->
+      <section id="m2w2">
+        <h2>Module 2 — Web Servers Part 1: Apache &amp; Nginx</h2>
+        <div class="week">Week 2</div>
+        <div class="outcome"><b>Outcome:</b> Install and manage Apache HTTP Server and Nginx.</div>
+        <div class="key">
+          <b>Apache Highlights</b>
+          <ul>
+            <li class="copyline">Open-source, modular, long-standing ecosystem and community.</li>
+            <li class="copyline">Beginner-friendly configuration; frequent security updates.</li>
+            <li class="copyline">May underperform at extreme concurrency without tuning.</li>
+          </ul>
+        </div>
+        <div class="key">
+          <b>Nginx Highlights</b>
+          <ul>
+            <li class="copyline">Event-driven architecture; predictable performance under high load.</li>
+            <li class="copyline">Doubles as reverse proxy, load balancer, and HTTP cache.</li>
+            <li class="copyline">Handles static content efficiently; common in modern stacks.</li>
+          </ul>
+        </div>
+        <div class="notes">
+          <b>Ops Notes</b>
+          <ul>
+            <li class="copyline">Key config: <code>nginx.conf</code> (locations vary by OS).</li>
+            <li class="copyline">Lifecycle: <code>nginx -s reload|stop|quit|reopen</code>; systemctl/service helpers on Linux.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Module 2 Week 3 -->
+      <section id="m2w3">
+        <h2>Module 2 — Web Servers Part 2: IIS &amp; Express.js</h2>
+        <div class="week">Week 3</div>
+        <div class="outcome"><b>Outcome:</b> Describe IIS, Node.js, and Express.js.</div>
+        <div class="key">
+          <b>IIS (Microsoft)</b>
+          <ul>
+            <li class="copyline">Supports HTTP/2, HTTPS, FTP/FTPS, SMTP, NNTP; Windows-centric.</li>
+            <li class="copyline">IIS Express is a lightweight developer edition.</li>
+            <li class="copyline">Terminology differs from Apache (DocumentRoot vs Site Home, etc.).</li>
+          </ul>
+        </div>
+        <div class="key">
+          <b>Node.js &amp; Express</b>
+          <ul>
+            <li class="copyline">Node.js: async, event-driven runtime for scalable network apps.</li>
+            <li class="copyline">Express: minimalist web framework for APIs and apps.</li>
+            <li class="copyline">Stacks: MEAN/MERN (Node + Express) and LEMP (with Nginx).</li>
+          </ul>
+        </div>
+        <div class="notes">
+          <b>Lab Focus</b>
+          <ul>
+            <li class="copyline">Install and manage IIS; compare with Node/Express dev flow.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Module 3 Week 4 -->
+      <section id="m3w4">
+        <h2>Module 3 — Deployment &amp; Hosting</h2>
+        <div class="week">Week 4</div>
+        <div class="outcome"><b>Outcomes:</b> Deploy web servers; move apps from local to remote hosts.</div>
+        <div class="key">
+          <b>Process &amp; Pipelines</b>
+          <ul>
+            <li class="copyline">SDLC models: Waterfall vs Agile (shorter cycles ≠ “just mini-waterfall”).</li>
+            <li class="copyline">CI/CD basics: integrate early, deploy often, automate checks.</li>
+          </ul>
+        </div>
+        <div class="key">
+          <b>Hosting Options</b>
+          <ul>
+            <li class="copyline">Static: GitHub Pages.</li>
+            <li class="copyline">Dynamic: Heroku (plus AWS, Azure, others).</li>
+            <li class="copyline">Environment parity matters from dev → staging → prod.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Module 4 Week 5 -->
+      <section id="m4w5">
+        <h2>Module 4 — Security Part 1: SSL/TLS</h2>
+        <div class="week">Week 5</div>
+        <div class="outcome"><b>Outcome:</b> Configure TLS &amp; X.509; generate a CSR with OpenSSL.</div>
+        <div class="key">
+          <b>Core Concepts</b>
+          <ul>
+            <li class="copyline">TLS secures transport (HTTPS default port 443); SSL is legacy.</li>
+            <li class="copyline">X.509 defines certificate format for public-key infrastructure.</li>
+            <li class="copyline">TLS handshake negotiates ciphers, verifies identity, derives session keys.</li>
+          </ul>
+        </div>
+        <div class="notes">
+          <b>Hands-On</b>
+          <ul>
+            <li class="copyline">OpenSSL: key generation → CSR → obtain certificate → configure server.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Module 4 Week 6 -->
+      <section id="m4w6">
+        <h2>Module 4 — Security Part 2: PKI &amp; Reverse Proxy</h2>
+        <div class="week">Week 6</div>
+        <div class="outcome"><b>Outcomes:</b> Explain PKI; integrate apps with reverse proxies/application servers.</div>
+        <div class="key">
+          <b>PKI Essentials</b>
+          <ul>
+            <li class="copyline">Symmetric vs Asymmetric crypto; keys are related and purpose-specific.</li>
+            <li class="copyline">Components: public/private keys, session keys, CA &amp; intermediate CAs, cert chains.</li>
+          </ul>
+        </div>
+        <div class="key">
+          <b>Reverse Proxy Integration</b>
+          <ul>
+            <li class="copyline">Reverse proxy terminates TLS, forwards to upstreams, adds caching and routing.</li>
+            <li class="copyline">Common tools: Nginx, HAProxy; supports header auth, rate limiting, blue/green.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Module 4 Week 7 -->
+      <section id="m4w7">
+        <h2>Module 4 — Security Part 3: OAuth</h2>
+        <div class="week">Week 7</div>
+        <div class="outcome"><b>Outcome:</b> Implement token-based authentication mechanisms including OAuth.</div>
+        <div class="key">
+          <b>AuthN vs AuthZ</b>
+          <ul>
+            <li class="copyline">Authentication (AuthN): verify identity.</li>
+            <li class="copyline">Authorization (AuthZ): verify permissions/scopes.</li>
+          </ul>
+        </div>
+        <div class="key">
+          <b>OAuth Overview</b>
+          <ul>
+            <li class="copyline">Open standard for access delegation — share data without sharing passwords.</li>
+            <li class="copyline">Used by major providers (Google, Microsoft, Facebook, etc.).</li>
+            <li class="copyline">Relies on tokens and scopes; integrates well with APIs and mobile/web apps.</li>
+          </ul>
+        </div>
+      </section>
+
+      <p class="footer">© COMP 1350 Summary — Double-click to copy any bullet • Press Enter in the filter to clear</p>
+    </main>
+  </div>
+
+<script>
+  // Copy-on-double-click for .copyline elements
+  function handleDblClick(e){
+    const el = e.target.closest('.copyline');
+    if(!el) return;
+    const text = el.innerText.trim();
+    navigator.clipboard.writeText(text).then(()=>{
+      el.classList.add('copied');
+      setTimeout(()=>el.classList.remove('copied'), 700);
+    }).catch(()=>{ /* noop */ });
+  }
+  document.addEventListener('dblclick', handleDblClick, false);
+
+  // Simple filter
+  const filter = document.getElementById('filter');
+  const sections = [...document.querySelectorAll('section')];
+  const reset = () => {
+    sections.forEach(s=>s.style.display='');
+    document.querySelectorAll('.copyline').forEach(li=>li.innerHTML = li.innerHTML.replace(/<mark>|<\/mark>/g,''));
+  };
+  filter.addEventListener('input', (e)=>{
+    const q = e.target.value.trim().toLowerCase();
+    if(!q){ reset(); return; }
+    sections.forEach(sec=>{
+      const hit = sec.textContent.toLowerCase().includes(q);
+      sec.style.display = hit ? '' : 'none';
+    });
+    // highlight matches within visible sections
+    document.querySelectorAll('section:not([style*="display: none"]) .copyline').forEach(li=>{
+      li.innerHTML = li.textContent.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'ig'), '<mark>$1</mark>');
+    });
+  });
+  filter.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter'){ filter.value=''; reset(); }
+  });
+</script>
+</body>
+</html>
+
