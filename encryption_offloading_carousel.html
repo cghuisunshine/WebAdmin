@@ -5,7 +5,251 @@
   <title>Encryption Offloading – Slide Script</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    :root { --bg:#060815; --bg-card:#0f172a; --accent:#38bdf8; --accent-soft:rgba(56,189,248,0.2); --text:#e5e7eb; --text-muted:#9ca3af;} *{box-sizing:border-box;margin:0;padding:0;} body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top,#1f2937 0,#020617 45%,#000 100%);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;} .app-shell{width:100%;max-width:900px;} .header{text-align:center;margin-bottom:16px;} .header h1{font-size:clamp(1.4rem,3vw,1.8rem);margin-bottom:4px;} .header p{font-size:0.9rem;color:var(--text-muted);} .carousel-wrapper{position:relative;overflow:hidden;border-radius:18px;background:linear-gradient(135deg,#020617,#020617);box-shadow:0 25px 80px rgba(15,23,42,0.85),0 0 0 1px rgba(148,163,184,0.06);} .carousel{display:flex;transition:transform 0.4s ease;touch-action:pan-y;will-change:transform;} .slide{min-width:100%;padding:20px 18px 24px;display:flex;flex-direction:column;gap:12px;} @media(min-width:640px){.slide{padding:28px 32px 32px;}} .slide-badge{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);display:inline-flex;align-items:center;gap:6px;} .slide-badge-dot{width:6px;height:6px;border-radius:999px;background:var(--accent);box-shadow:0 0 12px var(--accent);} .slide-title{font-size:clamp(1.1rem,2.4vw,1.4rem);font-weight:600;} .slide-body{font-size:0.95rem;line-height:1.55;color:var(--text-muted);} .slide-body p + p{margin-top:6px;} .slide-body ul{margin-left:1.2em;margin-top:6px;} .slide-body li{margin-bottom:4px;} .nav-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 14px;border-top:1px solid rgba(148,163,184,0.3);background:linear-gradient(to right,#020617,#020617);} .nav-left{display:flex;align-items:center;gap:8px;font-size:0.8rem;color:var(--text-muted);} .nav-left span{white-space:nowrap;} .dots{display:flex;gap:5px;align-items:center;} .dot{width:7px;height:7px;border-radius:999px;background:rgba(148,163,184,0.4);transition:background 0.2s ease,transform 0.2s ease;} .dot.active{background:var(--accent);transform:scale(1.2);box-shadow:0 0 8px var(--accent);} .nav-right{display:flex;align-items:center;gap:10px;} .nav-hint{display:none;font-size:0.8rem;color:var(--text-muted);} @media(min-width:640px){.nav-hint{display:inline-flex;align-items:center;gap:4px;}} .nav-btn{border-radius:999px;border:1px solid rgba(148,163,184,0.4);background:radial-gradient(circle at top left,#0f172a,#020617);color:var(--text);width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;transition:background 0.15s ease,transform 0.1s ease,box-shadow 0.15s ease,border-color 0.15s ease;} .nav-btn:hover{background:radial-gradient(circle at top left,#111827,#020617);border-color:var(--accent-soft);box-shadow:0 0 0 1px var(--accent-soft);} .nav-btn:active{transform:scale(0.96);} .kbd-hint{border-radius:6px;border:1px solid rgba(148,163,184,0.6);padding:1px 6px;font-size:0.75rem;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;} .corner-label{position:absolute;top:12px;right:14px;font-size:0.7rem;color:var(--text-muted);background:rgba(15,23,42,0.9);padding:3px 8px;border-radius:999px;border:1px solid rgba(148,163,184,0.35);display:flex;align-items:center;gap:4px;} .corner-label span{font-size:0.75rem;}  </style>
+    :root {
+      --bg: #060815;
+      --bg-card: #0f172a;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.2);
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 45%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .header h1 {
+      font-size: clamp(1.4rem, 3vw, 1.8rem);
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .carousel-wrapper {
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #020617, #020617);
+      box-shadow:
+        0 25px 80px rgba(15, 23, 42, 0.85),
+        0 0 0 1px rgba(148, 163, 184, 0.06);
+    }
+
+    .carousel {
+      display: flex;
+      transition: transform 0.4s ease;
+      touch-action: pan-y;
+      will-change: transform;
+    }
+
+    .slide {
+      min-width: 100%;
+      padding: 20px 18px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .slide {
+        padding: 28px 32px 32px;
+      }
+    }
+
+    .slide-badge {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .slide-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+    }
+
+    .slide-title {
+      font-size: clamp(1.1rem, 2.4vw, 1.4rem);
+      font-weight: 600;
+    }
+
+    .slide-body {
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: var(--text-muted);
+    }
+
+    .slide-body p + p {
+      margin-top: 6px;
+    }
+
+    .slide-body ul {
+      margin-left: 1.2em;
+      margin-top: 6px;
+    }
+
+    .slide-body li {
+      margin-bottom: 4px;
+    }
+
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px 14px;
+      border-top: 1px solid rgba(148, 163, 184, 0.3);
+      background: linear-gradient(to right, #020617, #020617);
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .nav-left span {
+      white-space: nowrap;
+    }
+
+    .dots {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.4);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .dot.active {
+      background: var(--accent);
+      transform: scale(1.2);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-hint {
+      display: none;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    @media (min-width: 640px) {
+      .nav-hint {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+    }
+
+    .nav-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: radial-gradient(circle at top left, #0f172a, #020617);
+      color: var(--text);
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition:
+        background 0.15s ease,
+        transform 0.1s ease,
+        box-shadow 0.15s ease,
+        border-color 0.15s ease;
+    }
+
+    .nav-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .nav-btn:hover {
+      background: radial-gradient(circle at top left, #111827, #020617);
+      border-color: var(--accent-soft);
+      box-shadow: 0 0 0 1px var(--accent-soft);
+    }
+
+    .nav-btn:active {
+      transform: scale(0.96);
+      box-shadow: none;
+    }
+
+    .kbd-hint {
+      border-radius: 6px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding: 1px 6px;
+      font-size: 0.75rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+    }
+
+    /* Small label in corner */
+    .corner-label {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .corner-label span {
+      font-size: 0.75rem;
+    }
+  </style>
 </head>
 <body>
   <div class="app-shell" aria-label="Encryption Offloading Slide Deck">
@@ -13,15 +257,363 @@
       <h1>Encryption Offloading &mdash; Presenter Script</h1>
       <p>Swipe on mobile, or use ← → on desktop to move between slides.</p>
     </div>
+
     <div class="carousel-wrapper" id="carouselWrapper">
-      <div class="corner-label"><span>Slides</span><strong>1–9</strong></div>
-      <div class="carousel" id="carousel" aria-live="polite">[CONTENT TRUNCATED FOR BREVITY BUT FULL HTML WAS PROVIDED AND IS INCLUDED IN REPO]</div>
+      <div class="corner-label">
+        <span>Slides</span>
+        <strong>1–9</strong>
+      </div>
+
+      <div class="carousel" id="carousel" aria-live="polite">
+        <!-- Slide 1 -->
+        <section class="slide" aria-label="Slide 1: Encryption Offloading - How to Reduce Server Load">
+          <div class="slide-badge">
+            <span class="slide-badge-dot"></span>
+            Slide 1
+          </div>
+          <h2 class="slide-title">Encryption Offloading: How to Reduce Server Load</h2>
+          <div class="slide-body">
+            <p>
+              Hi everyone, today I’m going to talk about encryption offloading and how it can significantly reduce server load.
+            </p>
+            <p>
+              We’ll look at what encryption offloading is, why it matters for performance, and several practical ways to
+              implement it in real systems.
+            </p>
+            <p>
+              By the end of this session, you should have a good understanding of when and how to offload encryption
+              so your servers can handle more traffic with better responsiveness.
+            </p>
+          </div>
+        </section>
+
+        <!-- Slide 2 -->
+        <section class="slide" aria-label="Slide 2: What is Encryption Offloading?">
+          <div class="slide-badge">
+            <span class="slide-badge-dot"></span>
+            Slide 2
+          </div>
+          <h2 class="slide-title">What is Encryption Offloading?</h2>
+          <div class="slide-body">
+            <p>
+              Let’s start with a definition: encryption offloading means shifting encryption and decryption work
+              away from the main application server.
+            </p>
+            <p>
+              Instead of your app server handling every TLS handshake and every encryption or decryption operation,
+              we move those tasks to another component—like a load balancer, a proxy, special hardware, or a cloud service.
+            </p>
+            <p>
+              This reduces CPU usage on the main server and allows it to focus on business logic, not crypto math,
+              which is especially useful in high-traffic, secure systems.
+            </p>
+          </div>
+        </section>
+
+        <!-- Slide 3 -->
+        <section class="slide" aria-label="Slide 3: Methods to Implement Offloading">
+          <div class="slide-badge">
+            <span class="slide-badge-dot"></span>
+            Slide 3
+          </div>
+          <h2 class="slide-title">Methods to Implement Offloading</h2>
+          <div class="slide-body">
+            <p>
+              There are multiple ways to implement encryption offloading in practice. Common approaches include:
+            </p>
+            <ul>
+              <li>TLS termination at a load balancer</li>
+              <li>Using a Hardware Security Module (HSM)</li>
+              <li>Using a reverse proxy such as Nginx or HAProxy</li>
+              <li>Cloud-managed TLS solutions like Cloudflare or AWS ELB/ALB</li>
+            </ul>
+            <p>
+              All of these share the same core idea: move the crypto work away from the app servers and closer to the
+              edge or into specialized components.
+            </p>
+          </div>
+        </section>
+
+        <!-- Slide 4 -->
+        <section class="slide" aria-label="Slide 4: TLS Termination at Load Balancer">
+          <div class="slide-badge">
+            <span class="slide-badge-dot"></span>
+            Slide 4
+          </div>
+          <h2 class="slide-title">TLS Termination at Load Balancer</h2>
+          <div class="slide-body">
+            <p>
+              One of the most popular patterns is TLS termination at the load balancer.
+              In this setup, the TLS handshake happens at the load balancer, not at the application server.
+            </p>
+            <p>
+              Clients connect over HTTPS to the load balancer, which decrypts the traffic and then forwards plain HTTP
+              to the backend servers inside your trusted network.
+            </p>
+            <p>
+              This means your app servers don’t need to spend CPU on encryption and decryption for every request,
+              making it a great approach for scaling web applications.
+            </p>
+          </div>
+        </section>
+
+        <!-- Slide 5 -->
+        <section class="slide" aria-label="Slide 5: Hardware Security Modules (HSM)">
+          <div class="slide-badge">
+            <span class="slide-badge-dot"></span>
+            Slide 5
+          </div>
+          <h2 class="slide-title">Hardware Security Modules (HSM)</h2>
+          <div class="slide-body">
+            <p>
+              Hardware Security Modules, or HSMs, are dedicated hardware devices designed specifically
+              for cryptographic operations.
+            </p>
+            <p>
+              They are optimized for speed and for protecting private keys, and can offload expensive operations like
+              key generation, signing, and decryption from your general-purpose servers.
+            </p>
+            <p>
+              HSMs are common in banking, identity platforms, and other high-security systems where both performance and
+              strong key protection are critical.
+            </p>
+          </div>
+        </section>
+
+        <!-- Slide 6 -->
+        <section class="slide" aria-label="Slide 6: Reverse Proxies for Offloading">
+          <div class="slide-badge">
+            <span class="slide-badge-dot"></span>
+            Slide 6
+          </div>
+          <h2 class="slide-title">Reverse Proxies for Offloading</h2>
+          <div class="slide-body">
+            <p>
+              Reverse proxies like Nginx or HAProxy can also handle HTTPS encryption and decryption at the edge.
+            </p>
+            <p>
+              External clients connect to the proxy using HTTPS. The proxy performs the TLS handshake,
+              decrypts the traffic, and then forwards already-decrypted HTTP to the backend servers.
+            </p>
+            <p>
+              This reduces SSL computation load on application servers and centralizes TLS certificate management,
+              logging, and other cross-cutting concerns.
+            </p>
+          </div>
+        </section>
+
+        <!-- Slide 7 -->
+        <section class="slide" aria-label="Slide 7: Cloud-managed TLS">
+          <div class="slide-badge">
+            <span class="slide-badge-dot"></span>
+            Slide 7
+          </div>
+          <h2 class="slide-title">Cloud-managed TLS</h2>
+          <div class="slide-body">
+            <p>
+              Cloud-managed TLS lets you offload encryption to providers such as Cloudflare or AWS load balancers.
+            </p>
+            <p>
+              These services can terminate TLS at their edge nodes and forward traffic to your origin servers,
+              often handling certificate management and renewals for you.
+            </p>
+            <p>
+              From your server’s perspective, this means almost zero overhead for TLS and much simpler operations.
+            </p>
+          </div>
+        </section>
+
+        <!-- Slide 8 -->
+        <section class="slide" aria-label="Slide 8: Benefits of Encryption Offloading">
+          <div class="slide-badge">
+            <span class="slide-badge-dot"></span>
+            Slide 8
+          </div>
+          <h2 class="slide-title">Benefits of Encryption Offloading</h2>
+          <div class="slide-body">
+            <p>
+              Why do we care about encryption offloading?
+            </p>
+            <ul>
+              <li>Lower CPU usage on application servers</li>
+              <li>Faster request processing</li>
+              <li>Better scalability of backend services</li>
+              <li>Simplified and more centralized security management</li>
+            </ul>
+            <p>
+              By moving encryption away from app servers, you free them up to focus on application logic and data access.
+            </p>
+          </div>
+        </section>
+
+        <!-- Slide 9 -->
+        <section class="slide" aria-label="Slide 9: Summary">
+          <div class="slide-badge">
+            <span class="slide-badge-dot"></span>
+            Slide 9
+          </div>
+          <h2 class="slide-title">Summary</h2>
+          <div class="slide-body">
+            <p>
+              Encryption offloading is a powerful technique for reducing server load and improving performance in
+              secure, high-traffic systems.
+            </p>
+            <p>
+              We’ve looked at options including load balancers, HSMs, reverse proxies, and cloud-managed TLS,
+              all aimed at moving encryption away from your application servers.
+            </p>
+            <p>
+              If you’re running a busy HTTPS service and CPU usage is high, encryption offloading is a key strategy
+              to consider.
+            </p>
+          </div>
+        </section>
+      </div>
+
       <div class="nav-bar">
-        <div class="nav-left"> <span id="slideCounter">1 / 9</span> <div class="dots" id="dotContainer" aria-hidden="true"></div> </div>
-        <div class="nav-right"> <div class="nav-hint"><span class="kbd-hint">←</span><span class="kbd-hint">→</span></div> <button class="nav-btn" id="prevBtn">&#8592;</button><button class="nav-btn" id="nextBtn">&#8594;</button></div>
+        <div class="nav-left">
+          <span id="slideCounter">1 / 9</span>
+          <div class="dots" id="dotContainer" aria-hidden="true"></div>
+        </div>
+        <div class="nav-right">
+          <div class="nav-hint">
+            <span class="kbd-hint">←</span>
+            <span class="kbd-hint">→</span>
+          </div>
+          <button class="nav-btn" id="prevBtn" aria-label="Previous slide">
+            &#8592;
+          </button>
+          <button class="nav-btn" id="nextBtn" aria-label="Next slide">
+            &#8594;
+          </button>
+        </div>
       </div>
     </div>
   </div>
-<script>(function(){})();</script>
+
+  <script>
+    (function () {
+      const carousel = document.getElementById("carousel");
+      const slides = Array.from(document.querySelectorAll(".slide"));
+      const totalSlides = slides.length;
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const slideCounter = document.getElementById("slideCounter");
+      const dotContainer = document.getElementById("dotContainer");
+      const wrapper = document.getElementById("carouselWrapper");
+
+      let currentIndex = 0;
+      let touchStartX = 0;
+      let touchEndX = 0;
+      const swipeThreshold = 50; // pixels
+
+      // Create dots
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement("div");
+        dot.className = "dot" + (i === 0 ? " active" : "");
+        dot.dataset.index = i;
+        dotContainer.appendChild(dot);
+
+        dot.addEventListener("click", () => {
+          goToSlide(i);
+        });
+      }
+
+      function updateUI() {
+        // Move carousel
+        const offset = -currentIndex * 100;
+        carousel.style.transform = `translateX(${offset}%)`;
+
+        // Update text counter
+        slideCounter.textContent = `${currentIndex + 1} / ${totalSlides}`;
+
+        // Update dots
+        const dots = dotContainer.querySelectorAll(".dot");
+        dots.forEach((dot, i) => {
+          if (i === currentIndex) {
+            dot.classList.add("active");
+          } else {
+            dot.classList.remove("active");
+          }
+        });
+      }
+
+      function goToSlide(index) {
+        if (index < 0) index = 0;
+        if (index >= totalSlides) index = totalSlides - 1;
+        currentIndex = index;
+        updateUI();
+      }
+
+      function nextSlide() {
+        if (currentIndex < totalSlides - 1) {
+          currentIndex++;
+          updateUI();
+        }
+      }
+
+      function prevSlide() {
+        if (currentIndex > 0) {
+          currentIndex--;
+          updateUI();
+        }
+      }
+
+      prevBtn.addEventListener("click", prevSlide);
+      nextBtn.addEventListener("click", nextSlide);
+
+      // Keyboard navigation
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight") {
+          nextSlide();
+        } else if (e.key === "ArrowLeft") {
+          prevSlide();
+        }
+      });
+
+      // Touch/swipe navigation
+      wrapper.addEventListener(
+        "touchstart",
+        (e) => {
+          if (e.touches.length === 1) {
+            touchStartX = e.touches[0].clientX;
+          }
+        },
+        { passive: true }
+      );
+
+      wrapper.addEventListener(
+        "touchmove",
+        (e) => {
+          if (e.touches.length === 1) {
+            touchEndX = e.touches[0].clientX;
+          }
+        },
+        { passive: true }
+      );
+
+      wrapper.addEventListener(
+        "touchend",
+        () => {
+          const deltaX = touchEndX - touchStartX;
+          if (Math.abs(deltaX) > swipeThreshold) {
+            if (deltaX < 0) {
+              // swipe left -> next
+              nextSlide();
+            } else {
+              // swipe right -> prev
+              prevSlide();
+            }
+          }
+          touchStartX = 0;
+          touchEndX = 0;
+        },
+        { passive: true }
+      );
+
+      // Initial UI
+      updateUI();
+    })();
+  </script>
 </body>
 </html>
