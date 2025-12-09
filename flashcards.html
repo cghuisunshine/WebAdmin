@@ -370,7 +370,13 @@
     answer.style.display = "none";
     answer.textContent = `${data.term} stands for ${data.expansion}. ${data.extra}`;
 
-    btnCheck.addEventListener("click", () => {
+    let answerVisible = false;
+
+    const updateCheckLabel = () => {
+      btnCheck.textContent = answerVisible ? "Hide" : "Check";
+    };
+
+    const evaluateAnswer = () => {
       const user = normalize(input.value);
       const correct = normalize(data.expansion);
 
@@ -384,7 +390,29 @@
         result.textContent = "Not quite. Compare your answer with the one below.";
         result.className = "result incorrect";
       }
+    };
+
+    const showAnswer = () => {
+      evaluateAnswer();
       answer.style.display = "block";
+      answerVisible = true;
+      updateCheckLabel();
+    };
+
+    const hideAnswer = () => {
+      answer.style.display = "none";
+      result.textContent = "";
+      result.className = "result";
+      answerVisible = false;
+      updateCheckLabel();
+    };
+
+    btnCheck.addEventListener("click", () => {
+      if (answerVisible) {
+        hideAnswer();
+      } else {
+        showAnswer();
+      }
     });
 
     btnPrev.addEventListener("click", () => {
@@ -408,7 +436,15 @@
     // Allow pressing Enter to check
     input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
-        btnCheck.click();
+        showAnswer();
+      }
+    });
+
+    card.addEventListener("dblclick", () => {
+      if (answerVisible) {
+        hideAnswer();
+      } else {
+        showAnswer();
       }
     });
 
@@ -427,6 +463,8 @@
 
     // Attach swipe handlers to the card
     attachSwipeHandlers(card);
+
+    updateCheckLabel();
   }
 
   function attachSwipeHandlers(element) {
@@ -484,4 +522,3 @@
 
 </body>
 </html>
-
