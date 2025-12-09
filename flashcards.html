@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Stack Acronym Flashcards – Swipe Version</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      margin: 0;
+      padding: 30px 12px;
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #58a6ff;
+      font-size: 1.6rem;
+    }
+    p.subtitle {
+      text-align: center;
+      color: #8b949e;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      max-width: 480px;
+    }
+    .card-wrapper {
+      max-width: 480px;
+      width: 100%;
+    }
+    .card {
+      background: #161b22;
+      border-radius: 12px;
+      border: 1px solid #30363d;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    .term {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #ffa657;
+    }
+    .hint {
+      font-size: 0.95rem;
+      color: #8b949e;
+    }
+    .card input {
+      margin-top: 4px;
+      padding: 7px 9px;
+      border-radius: 6px;
+      border: 1px solid #30363d;
+      background: #0d1117;
+      color: #e6edf3;
+      font-size: 0.95rem;
+    }
+    .controls-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .controls-row button {
+      padding: 7px 12px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      flex: 1;
+      min-width: 0;
+    }
+    .btn-check {
+      background: #238636;
+      color: #fff;
+    }
+    .btn-check:hover {
+      background: #2ea043;
+    }
+    .btn-prev {
+      background: #30363d;
+      color: #e6edf3;
+    }
+    .btn-next {
+      background: #30363d;
+      color: #e6edf3;
+    }
+    .btn-prev:hover,
+    .btn-next:hover {
+      background: #3b4252;
+    }
+    .result {
+      margin-top: 6px;
+      font-size: 0.9rem;
+    }
+    .result.correct {
+      color: #3fb950;
+    }
+    .result.incorrect {
+      color: #f85149;
+    }
+    .answer {
+      margin-top: 4px;
+      font-size: 0.9rem;
+      color: #c9d1d9;
+    }
+    .card-index {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: #8b949e;
+      text-align: center;
+    }
+    .swipe-hint {
+      margin-top: 4px;
+      font-size: 0.8rem;
+      color: #6e7681;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Web Stack Acronym Flashcards</h1>
+<p class="subtitle">
+  Type what the acronym stands for, tap <b>Check</b>, then swipe left/right (or use buttons) to move between cards.
+</p>
+
+<div class="card-wrapper" id="cardWrapper">
+  <!-- Card content will be injected by JavaScript -->
+</div>
+
+<div class="card-index" id="cardIndex"></div>
+<div class="swipe-hint">Swipe left/right on the card (or use Prev/Next).</div>
+
+<script>
+  const cardsData = [
+    {
+      term: "LB",
+      hint: "Algorithms that distribute traffic across multiple servers (round-robin, least-connections, etc.).",
+      expansion: "Load Balancing",
+      extra: "LB stands for Load Balancing, which is how traffic gets shared across backend servers."
+    },
+    {
+      term: "IIS",
+      hint: "Microsoft’s web server used on Windows.",
+      expansion: "Internet Information Services",
+      extra: "IIS stands for Internet Information Services, a Windows web server for hosting sites and web apps."
+    },
+    {
+      term: "PEM",
+      hint: "Base64-encoded file format for keys and certificates.",
+      expansion: "Privacy Enhanced Mail",
+      extra: "PEM stands for Privacy Enhanced Mail, a common text format for SSL/TLS keys and certificates."
+    },
+    {
+      term: "SPOF / SPoF",
+      hint: "One failing component that can bring down the whole system.",
+      expansion: "Single Point of Failure",
+      extra: "SPOF stands for Single Point of Failure, something you remove by adding redundancy."
+    },
+    {
+      term: "DNS",
+      hint: "Converts domain names into IP addresses.",
+      expansion: "Domain Name System",
+      extra: "DNS stands for Domain Name System, like a phonebook for the internet."
+    },
+    {
+      term: "HTTP",
+      hint: "The basic protocol for web traffic.",
+      expansion: "HyperText Transfer Protocol",
+      extra: "HTTP stands for HyperText Transfer Protocol, used to transfer web pages."
+    },
+    {
+      term: "HTTPS",
+      hint: "HTTP over encryption (TLS).",
+      expansion: "HyperText Transfer Protocol Secure",
+      extra: "HTTPS stands for HyperText Transfer Protocol Secure, which is HTTP with TLS security."
+    },
+    {
+      term: "LAMP",
+      hint: "Classic Linux-based web stack with Apache.",
+      expansion: "Linux, Apache, MySQL, PHP",
+      extra: "LAMP expands to Linux, Apache, MySQL, PHP."
+    },
+    {
+      term: "WAMP",
+      hint: "Windows variant of the classic AMP stack.",
+      expansion: "Windows, Apache, MySQL, PHP",
+      extra: "WAMP expands to Windows, Apache, MySQL, PHP."
+    },
+    {
+      term: "MAMP",
+      hint: "macOS variant of the classic AMP stack.",
+      expansion: "macOS, Apache, MySQL, PHP",
+      extra: "MAMP expands to macOS, Apache, MySQL, PHP."
+    },
+    {
+      term: "LEMP",
+      hint: "Linux web stack with Nginx instead of Apache.",
+      expansion: "Linux, (Engine X) Nginx, MySQL, PHP",
+      extra: "LEMP expands to Linux, Engine X (Nginx), MySQL, PHP."
+    },
+    {
+      term: "MEAN",
+      hint: "Full JavaScript stack with Angular on the frontend.",
+      expansion: "MongoDB, Express, Angular, Node.js",
+      extra: "MEAN expands to MongoDB, Express, Angular, Node.js."
+    },
+    {
+      term: "MERN",
+      hint: "Full JavaScript stack with React on the frontend.",
+      expansion: "MongoDB, Express, React, Node.js",
+      extra: "MERN expands to MongoDB, Express, React, Node.js."
+    },
+    {
+      term: "AuthN",
+      hint: "Verifying who the user is (identity).",
+      expansion: "Authentication",
+      extra: "AuthN stands for Authentication, confirming the user’s identity."
+    },
+    {
+      term: "AuthZ",
+      hint: "Verifying what the user can do (permissions).",
+      expansion: "Authorization",
+      extra: "AuthZ stands for Authorization, controlling what resources a user may access."
+    },
+    {
+      term: "TLS",
+      hint: "Modern protocol securing HTTPS traffic.",
+      expansion: "Transport Layer Security",
+      extra: "TLS stands for Transport Layer Security, the protocol behind most secure web traffic."
+    },
+    {
+      term: "SSL",
+      hint: "Older encryption protocol, replaced by TLS.",
+      expansion: "Secure Sockets Layer",
+      extra: "SSL stands for Secure Sockets Layer, an older protocol still used as a generic term for certificates."
+    },
+    {
+      term: "OAuth",
+      hint: "Delegated authorization (Login with Google, etc.).",
+      expansion: "Open Authorization",
+      extra: "OAuth stands for Open Authorization, letting apps access resources on behalf of a user."
+    },
+    {
+      term: "SDLC",
+      hint: "The overall process of building and maintaining software.",
+      expansion: "Software Development Life Cycle",
+      extra: "SDLC stands for Software Development Life Cycle, from planning through maintenance."
+    },
+    {
+      term: "CI",
+      hint: "Automatically testing and integrating code changes.",
+      expansion: "Continuous Integration",
+      extra: "CI stands for Continuous Integration, where changes are merged and tested frequently."
+    },
+    {
+      term: "CD",
+      hint: "Automatically delivering / deploying new versions.",
+      expansion: "Continuous Delivery / Continuous Deployment",
+      extra: "CD stands for Continuous Delivery or Continuous Deployment, automating releases."
+    },
+    {
+      term: "CSR",
+      hint: "File you generate when requesting an HTTPS certificate.",
+      expansion: "Certificate Signing Request",
+      extra: "CSR stands for Certificate Signing Request, sent to a CA to obtain a certificate."
+    },
+    {
+      term: "CA",
+      hint: "Trusted party that issues HTTPS certificates.",
+      expansion: "Certificate Authority",
+      extra: "CA stands for Certificate Authority, which validates identities and signs certificates."
+    },
+    {
+      term: "DB",
+      hint: "The system that stores application data.",
+      expansion: "Database",
+      extra: "DB stands for Database, a structured store of persistent data."
+    },
+    {
+      term: "CDN",
+      hint: "Network of edge servers serving content close to users.",
+      expansion: "Content Delivery Network",
+      extra: "CDN stands for Content Delivery Network, which speeds up static content delivery."
+    },
+    {
+      term: "VHost",
+      hint: "Multiple sites on the same web server.",
+      expansion: "Virtual Host",
+      extra: "VHost stands for Virtual Host, letting one server serve many domains."
+    },
+    {
+      term: "PKI",
+      hint: "System managing keys, certificates, and trust.",
+      expansion: "Public Key Infrastructure",
+      extra: "PKI stands for Public Key Infrastructure, the backbone of certificate-based security."
+    },
+    {
+      term: "C10K",
+      hint: "The challenge of handling 10,000 simultaneous clients.",
+      expansion: "Concurrent 10,000 connections problem",
+      extra: "C10K refers to the problem of serving around 10,000 concurrent client connections efficiently."
+    }
+  ];
+
+  let currentIndex = 0;
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  function normalize(str) {
+    return str
+      .toLowerCase()
+      .replace(/continuous delivery\/?deployment/g, "continuous delivery continuous deployment")
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+  }
+
+  function renderCard() {
+    const wrapper = document.getElementById("cardWrapper");
+    const data = cardsData[currentIndex];
+
+    wrapper.innerHTML = "";
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const termEl = document.createElement("div");
+    termEl.className = "term";
+    termEl.textContent = data.term;
+
+    const hintEl = document.createElement("div");
+    hintEl.className = "hint";
+    hintEl.textContent = data.hint;
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "Type the full expansion here…";
+
+    const controlsRow = document.createElement("div");
+    controlsRow.className = "controls-row";
+
+    const btnCheck = document.createElement("button");
+    btnCheck.className = "btn-check";
+    btnCheck.textContent = "Check";
+
+    const btnPrev = document.createElement("button");
+    btnPrev.className = "btn-prev";
+    btnPrev.textContent = "◀ Prev";
+
+    const btnNext = document.createElement("button");
+    btnNext.className = "btn-next";
+    btnNext.textContent = "Next ▶";
+
+    controlsRow.appendChild(btnCheck);
+    controlsRow.appendChild(btnPrev);
+    controlsRow.appendChild(btnNext);
+
+    const result = document.createElement("div");
+    result.className = "result";
+
+    const answer = document.createElement("div");
+    answer.className = "answer";
+    answer.style.display = "none";
+    answer.textContent = `${data.term} stands for ${data.expansion}. ${data.extra}`;
+
+    btnCheck.addEventListener("click", () => {
+      const user = normalize(input.value);
+      const correct = normalize(data.expansion);
+
+      if (!user) {
+        result.textContent = "Answer shown below.";
+        result.className = "result";
+      } else if (user === correct) {
+        result.textContent = "Correct!";
+        result.className = "result correct";
+      } else {
+        result.textContent = "Not quite. Compare your answer with the one below.";
+        result.className = "result incorrect";
+      }
+      answer.style.display = "block";
+    });
+
+    btnPrev.addEventListener("click", () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+      } else {
+        currentIndex = cardsData.length - 1; // wrap around
+      }
+      renderCard();
+    });
+
+    btnNext.addEventListener("click", () => {
+      if (currentIndex < cardsData.length - 1) {
+        currentIndex++;
+      } else {
+        currentIndex = 0; // wrap around
+      }
+      renderCard();
+    });
+
+    // Allow pressing Enter to check
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        btnCheck.click();
+      }
+    });
+
+    card.appendChild(termEl);
+    card.appendChild(hintEl);
+    card.appendChild(input);
+    card.appendChild(controlsRow);
+    card.appendChild(result);
+    card.appendChild(answer);
+
+    wrapper.appendChild(card);
+
+    // Update index display
+    const indexEl = document.getElementById("cardIndex");
+    indexEl.textContent = `Card ${currentIndex + 1} / ${cardsData.length}`;
+
+    // Attach swipe handlers to the card
+    attachSwipeHandlers(card);
+  }
+
+  function attachSwipeHandlers(element) {
+    element.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    element.addEventListener("touchend", (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+  }
+
+  function handleSwipe() {
+    const diff = touchEndX - touchStartX;
+    const threshold = 50; // px
+
+    if (Math.abs(diff) < threshold) return;
+
+    if (diff < 0) {
+      // swipe left → next
+      if (currentIndex < cardsData.length - 1) {
+        currentIndex++;
+      } else {
+        currentIndex = 0;
+      }
+    } else {
+      // swipe right → prev
+      if (currentIndex > 0) {
+        currentIndex--;
+      } else {
+        currentIndex = cardsData.length - 1;
+      }
+    }
+    renderCard();
+  }
+
+  // Optional: keyboard navigation with arrow keys
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight") {
+      if (currentIndex < cardsData.length - 1) currentIndex++;
+      else currentIndex = 0;
+      renderCard();
+    }
+    if (e.key === "ArrowLeft") {
+      if (currentIndex > 0) currentIndex--;
+      else currentIndex = cardsData.length - 1;
+      renderCard();
+    }
+  });
+
+  // Initial render
+  renderCard();
+</script>
+
+</body>
+</html>
+
