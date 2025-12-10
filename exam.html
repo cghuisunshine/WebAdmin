@@ -132,6 +132,51 @@
       color: #8b949e;
       font-size: 0.9rem;
     }
+    .practice-score {
+      margin-top: 2px;
+      text-align: center;
+      color: #8b949e;
+      font-size: 0.9rem;
+    }
+    .practice-filter {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 8px 0 10px;
+      font-size: 0.9rem;
+      color: #8b949e;
+    }
+    .filter-label {
+      color: #8b949e;
+    }
+    .filter-btn {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #30363d;
+      background: #11151c;
+      color: #e6edf3;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .filter-btn.active {
+      border-color: #58a6ff;
+      background: #1b2230;
+      color: #58a6ff;
+    }
+    .filter-btn:hover {
+      background: #1b2230;
+    }
+    .filter-hint {
+      color: #6e7681;
+      font-size: 0.85rem;
+    }
+    .practice-empty {
+      display: none;
+      color: #8b949e;
+      font-size: 0.9rem;
+      margin: 6px 0;
+    }
     .practice-hint {
       margin: 4px 0 12px;
       color: #6e7681;
@@ -535,14 +580,21 @@
   <section id="practice">
     <h2>8. Practice Questions (MCQ & True/False)</h2>
 
-    <h3>8.1 Multiple Choice (100 Questions)</h3>
     <p class="tagline">Swipe left/right or use Prev/Next to move through one question at a time; the True/False set (T1–T20) is in the same rotation.</p>
     <div class="question-nav">
       <button class="btn-prev" id="practicePrev">◀ Prev</button>
       <div class="question-progress" id="practiceProgress">Question 1 / --</div>
       <button class="btn-next" id="practiceNext">Next ▶</button>
     </div>
+    <div class="practice-score" id="practiceScore" aria-live="polite">Correct: 0 / 0</div>
+    <div class="practice-filter">
+      <div class="filter-label">Show:</div>
+      <button class="filter-btn active" data-practice-filter="all" id="filterAll">All</button>
+      <button class="filter-btn" data-practice-filter="failed" id="filterFailed">Failed only</button>
+      <div class="filter-hint" id="practiceFilterHint">Showing all questions</div>
+    </div>
     <div class="practice-hint">Swipe on the question area or tap Prev/Next to navigate.</div>
+    <div class="practice-empty" id="practiceEmpty">No failed questions yet. Switch back to All to keep practicing.</div>
 
     <div class="practice-viewport" id="practiceViewport">
 
@@ -1616,6 +1668,7 @@
 
 <script>
   /* ----- MCQ / True-False interactive logic ----- */
+  const questionResults = new Map();
   document.querySelectorAll('.question-block').forEach(block => {
     const correctLetter = block.getAttribute('data-correct');
     const options = block.querySelectorAll('.option');
@@ -1649,41 +1702,190 @@
           feedback.textContent = `Not quite. Correct answer: ${correctLetter}.`;
           feedback.classList.add('incorrect');
         }
+
+        // Track score for the practice scoreboard
+        const status = chosen === correctLetter ? 'correct' : 'incorrect';
+        questionResults.set(block, status);
+        updateFailedForBlock(block, status);
+        updatePracticeScore();
+        if (practiceFilter === 'failed') {
+          renderPracticeQuestion(practiceIndex);
+        }
       });
     });
   });
 
   /* ----- Practice question navigation (single view + swipe) ----- */
+  const FAILED_STORAGE_KEY = 'practiceFailedIndices';
+  const failedIndexSet = loadFailedIndices();
   const practiceSection = document.getElementById('practice');
-  const practiceBlocks = Array.from(document.querySelectorAll('#practice .question-block'));
+  const practiceAllBlocks = Array.from(document.querySelectorAll('#practice .question-block'));
   const practicePrev = document.getElementById('practicePrev');
   const practiceNext = document.getElementById('practiceNext');
   const practiceProgress = document.getElementById('practiceProgress');
+  const practiceScore = document.getElementById('practiceScore');
+  const practiceEmpty = document.getElementById('practiceEmpty');
+  const practiceFilterHint = document.getElementById('practiceFilterHint');
+  const filterAllBtn = document.getElementById('filterAll');
+  const filterFailedBtn = document.getElementById('filterFailed');
   const practiceViewport = document.getElementById('practiceViewport');
   let practiceIndex = 0;
   let practiceTouchStartX = 0;
   let practiceTouchEndX = 0;
   let isPracticeMouseDown = false;
+  let practiceFilter = 'all';
 
-  if (practiceSection && practiceBlocks.length) {
+  function loadFailedIndices() {
+    try {
+      const raw = localStorage.getItem(FAILED_STORAGE_KEY);
+      if (!raw) return new Set();
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return new Set();
+      return new Set(
+        parsed
+          .map((n) => Number(n))
+          .filter((n) => Number.isFinite(n) && n >= 0)
+      );
+    } catch (e) {
+      return new Set();
+    }
+  }
+
+  function persistFailedIndices() {
+    try {
+      localStorage.setItem(FAILED_STORAGE_KEY, JSON.stringify(Array.from(failedIndexSet)));
+    } catch (e) {
+      // ignore storage errors
+    }
+  }
+
+  function updateFailedForBlock(block, status) {
+    const idx = Number(block.dataset.practiceIndex);
+    if (!Number.isFinite(idx)) return;
+    if (status === 'incorrect') {
+      failedIndexSet.add(idx);
+    } else {
+      failedIndexSet.delete(idx);
+    }
+    persistFailedIndices();
+  }
+
+  practiceAllBlocks.forEach((block, idx) => {
+    block.dataset.practiceIndex = String(idx);
+    if (failedIndexSet.has(idx)) {
+      questionResults.set(block, 'incorrect');
+    }
+  });
+
+  function updatePracticeScore() {
+    if (!practiceScore || !practiceAllBlocks.length) return;
+    let correct = 0;
+    let attempted = 0;
+
+    practiceAllBlocks.forEach((block) => {
+      const result = questionResults.get(block);
+      if (!result) return;
+      attempted++;
+      if (result === 'correct') correct++;
+    });
+
+    practiceScore.textContent = `Correct: ${correct} / ${practiceAllBlocks.length} (Attempted: ${attempted})`;
+  }
+
+  function resetQuestionView(block) {
+    const options = block.querySelectorAll('.option');
+    options.forEach((opt) => {
+      opt.classList.remove('selected', 'correct', 'incorrect');
+    });
+    const feedback = block.querySelector('.feedback');
+    if (feedback) {
+      feedback.textContent = '';
+      feedback.className = 'feedback';
+    }
+  }
+
+  function getActiveBlocks() {
+    if (practiceFilter === 'failed') {
+      return practiceAllBlocks.filter((block) => questionResults.get(block) === 'incorrect');
+    }
+    return practiceAllBlocks;
+  }
+
+  function setFilterButtons(filter) {
+    if (filterAllBtn) filterAllBtn.classList.toggle('active', filter === 'all');
+    if (filterFailedBtn) filterFailedBtn.classList.toggle('active', filter === 'failed');
+  }
+
+  function updateFilterHint(activeCount) {
+    if (!practiceFilterHint) return;
+    if (practiceFilter === 'failed') {
+      practiceFilterHint.textContent = activeCount
+        ? `Showing ${activeCount} failed question${activeCount === 1 ? '' : 's'}`
+        : 'No failed questions right now';
+    } else {
+      practiceFilterHint.textContent = 'Showing all questions';
+    }
+  }
+
+  if (practiceSection && practiceAllBlocks.length) {
     practiceSection.classList.add('practice-enhanced');
   }
 
   function renderPracticeQuestion(nextIndex) {
-    if (!practiceBlocks.length) return;
-    practiceIndex = (nextIndex + practiceBlocks.length) % practiceBlocks.length;
-    practiceBlocks.forEach((block, idx) => {
-      const isActive = idx === practiceIndex;
+    const activeBlocks = getActiveBlocks();
+    updateFilterHint(activeBlocks.length);
+
+    // Show empty state if no items in the current filter
+    if (!activeBlocks.length) {
+      practiceIndex = 0;
+      practiceAllBlocks.forEach((block) => {
+        block.classList.remove('active');
+        block.setAttribute('aria-hidden', 'true');
+      });
+      if (practiceProgress) {
+        practiceProgress.textContent =
+          practiceFilter === 'failed' ? 'No failed questions yet' : 'No questions found';
+      }
+      if (practiceEmpty) practiceEmpty.style.display = 'block';
+      if (practicePrev) practicePrev.disabled = true;
+      if (practiceNext) practiceNext.disabled = true;
+      return;
+    }
+
+    if (practiceEmpty) practiceEmpty.style.display = 'none';
+    if (practicePrev) practicePrev.disabled = false;
+    if (practiceNext) practiceNext.disabled = false;
+
+    practiceIndex = (nextIndex + activeBlocks.length) % activeBlocks.length;
+    practiceAllBlocks.forEach((block) => {
+      const isActive = block === activeBlocks[practiceIndex];
       block.classList.toggle('active', isActive);
       block.setAttribute('aria-hidden', isActive ? 'false' : 'true');
     });
     if (practiceProgress) {
-      practiceProgress.textContent = `Question ${practiceIndex + 1} / ${practiceBlocks.length}`;
+      practiceProgress.textContent = `Question ${practiceIndex + 1} / ${activeBlocks.length}`;
     }
   }
 
   const goToPrevQuestion = () => renderPracticeQuestion(practiceIndex - 1);
   const goToNextQuestion = () => renderPracticeQuestion(practiceIndex + 1);
+
+  const setPracticeFilter = (filter) => {
+    practiceFilter = filter;
+    setFilterButtons(filter);
+    if (filter === 'failed') {
+      getActiveBlocks().forEach(resetQuestionView);
+    }
+    practiceIndex = 0;
+    renderPracticeQuestion(0);
+  };
+
+  if (filterAllBtn) {
+    filterAllBtn.addEventListener('click', () => setPracticeFilter('all'));
+  }
+  if (filterFailedBtn) {
+    filterFailedBtn.addEventListener('click', () => setPracticeFilter('failed'));
+  }
 
   if (practicePrev) {
     practicePrev.addEventListener('click', goToPrevQuestion);
@@ -1740,6 +1942,7 @@
   }
 
   renderPracticeQuestion(0);
+  updatePracticeScore();
 
   /* ----- Flashcards (swipe + input + check) logic ----- */
 
