@@ -93,6 +93,50 @@
     .question-block b {
       color: #ffa657;
     }
+    #practice.practice-enhanced .question-block {
+      display: none;
+    }
+    #practice.practice-enhanced .question-block.active {
+      display: block;
+    }
+    .practice-viewport {
+      position: relative;
+      overflow: hidden;
+      min-height: 220px;
+      touch-action: pan-y;
+    }
+    .question-nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    .question-nav button {
+      flex: 1;
+      min-width: 0;
+      padding: 7px 12px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      background: #30363d;
+      color: #e6edf3;
+    }
+    .question-nav button:hover {
+      background: #3b4252;
+    }
+    .question-progress {
+      flex: 2;
+      text-align: center;
+      color: #8b949e;
+      font-size: 0.9rem;
+    }
+    .practice-hint {
+      margin: 4px 0 12px;
+      color: #6e7681;
+      font-size: 0.85rem;
+    }
     .option {
       margin-top: 4px;
       padding: 6px 8px;
@@ -492,6 +536,15 @@
     <h2>8. Practice Questions (MCQ & True/False)</h2>
 
     <h3>8.1 Multiple Choice (100 Questions)</h3>
+    <p class="tagline">Swipe left/right or use Prev/Next to move through one question at a time; the True/False set (T1–T20) is in the same rotation.</p>
+    <div class="question-nav">
+      <button class="btn-prev" id="practicePrev">◀ Prev</button>
+      <div class="question-progress" id="practiceProgress">Question 1 / --</div>
+      <button class="btn-next" id="practiceNext">Next ▶</button>
+    </div>
+    <div class="practice-hint">Swipe on the question area or tap Prev/Next to navigate.</div>
+
+    <div class="practice-viewport" id="practiceViewport">
 
     <!-- 1–10 (original set) -->
     <div class="question-block" data-correct="A">
@@ -1401,8 +1454,6 @@
       <div class="feedback"></div>
     </div>
 
-    <h3>8.2 True / False (20 Questions)</h3>
-
     <div class="question-block" data-correct="T">
       <b>T1.</b> TLS is the modern replacement for SSL for securing HTTPS traffic. (T/F)
       <div class="option" data-letter="T">True</div>
@@ -1543,6 +1594,8 @@
       <div class="feedback"></div>
     </div>
 
+    </div>
+
   </section>
   <!-- 9. Flashcards -->
   <section id="flashcards">
@@ -1599,6 +1652,94 @@
       });
     });
   });
+
+  /* ----- Practice question navigation (single view + swipe) ----- */
+  const practiceSection = document.getElementById('practice');
+  const practiceBlocks = Array.from(document.querySelectorAll('#practice .question-block'));
+  const practicePrev = document.getElementById('practicePrev');
+  const practiceNext = document.getElementById('practiceNext');
+  const practiceProgress = document.getElementById('practiceProgress');
+  const practiceViewport = document.getElementById('practiceViewport');
+  let practiceIndex = 0;
+  let practiceTouchStartX = 0;
+  let practiceTouchEndX = 0;
+  let isPracticeMouseDown = false;
+
+  if (practiceSection && practiceBlocks.length) {
+    practiceSection.classList.add('practice-enhanced');
+  }
+
+  function renderPracticeQuestion(nextIndex) {
+    if (!practiceBlocks.length) return;
+    practiceIndex = (nextIndex + practiceBlocks.length) % practiceBlocks.length;
+    practiceBlocks.forEach((block, idx) => {
+      const isActive = idx === practiceIndex;
+      block.classList.toggle('active', isActive);
+      block.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+    });
+    if (practiceProgress) {
+      practiceProgress.textContent = `Question ${practiceIndex + 1} / ${practiceBlocks.length}`;
+    }
+  }
+
+  const goToPrevQuestion = () => renderPracticeQuestion(practiceIndex - 1);
+  const goToNextQuestion = () => renderPracticeQuestion(practiceIndex + 1);
+
+  if (practicePrev) {
+    practicePrev.addEventListener('click', goToPrevQuestion);
+  }
+  if (practiceNext) {
+    practiceNext.addEventListener('click', goToNextQuestion);
+  }
+
+  if (practiceViewport) {
+    practiceViewport.addEventListener(
+      'touchstart',
+      (e) => {
+        practiceTouchStartX = e.changedTouches[0].screenX;
+      },
+      { passive: true }
+    );
+    practiceViewport.addEventListener(
+      'touchend',
+      (e) => {
+        practiceTouchEndX = e.changedTouches[0].screenX;
+        const diff = practiceTouchEndX - practiceTouchStartX;
+        if (Math.abs(diff) > 50) {
+          if (diff < 0) {
+            goToNextQuestion();
+          } else {
+            goToPrevQuestion();
+          }
+        }
+      },
+      { passive: true }
+    );
+
+    practiceViewport.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      isPracticeMouseDown = true;
+      practiceTouchStartX = e.clientX;
+    });
+    practiceViewport.addEventListener('mouseup', (e) => {
+      if (!isPracticeMouseDown) return;
+      isPracticeMouseDown = false;
+      practiceTouchEndX = e.clientX;
+      const diff = practiceTouchEndX - practiceTouchStartX;
+      if (Math.abs(diff) > 50) {
+        if (diff < 0) {
+          goToNextQuestion();
+        } else {
+          goToPrevQuestion();
+        }
+      }
+    });
+    practiceViewport.addEventListener('mouseleave', () => {
+      isPracticeMouseDown = false;
+    });
+  }
+
+  renderPracticeQuestion(0);
 
   /* ----- Flashcards (swipe + input + check) logic ----- */
 
@@ -1993,4 +2134,3 @@
 
 </body>
 </html>
-
